@@ -1,0 +1,4 @@
+INDEX VERSION 1.129+C:\Users\nathan\Google Drive\Vera_Chat\.metadata\.plugins\org.eclipse.jdt.core
+137624701.index
+3878457715.index
+2501520862.index
