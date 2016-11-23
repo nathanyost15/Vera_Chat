@@ -24,5 +24,6 @@ public class Driver
 			System.out.println("Server has responded with HELLO!");
 		else
 			System.out.println("Server has not responded!");
+		System.exit(0);
 	}
 }

@@ -51,6 +51,8 @@ public class NFunction
 			int character =0;			
 			while((character = in.read()) != -1)
 			{
+				if((char)character == ';')
+					break;
 				answer += (char)character;
 			}
 		} 
@@ -61,15 +63,19 @@ public class NFunction
 	public String recv()
 	{
 		String answer = "";
-				
+		TimeOut timeout = new TimeOut(10);
 		try 
 		{
 			// Receive message
 			int character =0;	
+			timeout.start();
 			while((character = in.read()) != -1)
 			{
-				answer += (char)character;
+				if((char)character == ';')
+					break;
+				answer += (char)character;				
 			}
+			timeout.end();
 		} 
 		catch (IOException e) {e.printStackTrace();}
 		return answer;

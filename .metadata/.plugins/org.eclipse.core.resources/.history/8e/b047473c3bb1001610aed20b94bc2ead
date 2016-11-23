@@ -1,0 +1,17 @@
+package client;
+
+public class TimeOut extends Thread
+{
+	private Timer timer;
+	private int timeout;
+	public TimeOut(int timeout)
+	{
+		this.timeout = timeout;
+	}
+	
+	@Override
+	public void run()
+	{
+		
+	}
+}

@@ -1,0 +1,33 @@
+package client;
+
+public class TimeOut extends Thread
+{
+	private Timer timer;
+	private int timeout;
+	boolean stop;
+	public TimeOut(int timeout)
+	{
+		this.timeout = timeout;
+		timer = new Timer();
+		stop = false;
+	}
+	
+	@Override
+	public void run()
+	{
+		while(!stop)
+		{
+			if(timer.checkTick(timeout*1000));
+			{
+				break;
+				System.err.println("Time Out has occurred!");
+				System.exit(-1);
+			}
+		}
+	}
+	
+	public void end()
+	{
+		stop = true;
+	}
+}
