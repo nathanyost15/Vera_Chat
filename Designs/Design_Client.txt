@@ -1,0 +1,16 @@
+/***************************************************************************************
+* Client Design
+* Nathaniel B. Yost
+***************************************************************************************/
+DONE -> Get 2 command line arguments hostname/ip port
+DONE -> Create Socket
+DONE -> Connect to server using command line arguments
+DONE -> get HELLO message from server
+prompt a nickname from user
+send NICK to server to let it know client is sending a nickname
+send nicname to be validated to server
+if server finds a duplicate it will return RETRY to client and client must prompt another nickname
+if server finds the nickname unique it will return READY
+client will continue to receive data from server and display it while also accepting input from user
+input from user will be sent to server and echoed to all other connected clients
+

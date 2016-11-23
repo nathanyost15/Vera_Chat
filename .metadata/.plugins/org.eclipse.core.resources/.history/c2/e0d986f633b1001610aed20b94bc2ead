@@ -1,0 +1,14 @@
+package client;
+
+public class Network 
+{
+	public Network()
+	{
+		init();
+	}
+	
+	public void init()
+	{
+		
+	}
+}

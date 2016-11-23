@@ -1,0 +1,21 @@
+package client;
+
+public class Driver 
+{
+	public static void main(String[] args)
+	{
+		switch(args.length)
+		{
+			case 2:
+				break;
+			case 1:
+				System.out.println("Missing second argument!");
+			default:
+				System.out.println("Usage: hostname/ip port");
+				System.exit(-1);
+				
+		}
+		Client client = new Client();
+		client.connect(args[0], Integer.parseInt(args[1]));
+	}
+}
