@@ -1,0 +1,17 @@
+package client;
+
+import java.net.Socket;
+
+public class Network 
+{
+	private Socket socket;
+	public Network()
+	{
+		init();
+	}
+	
+	public void init()
+	{
+		
+	}
+}

@@ -2,9 +2,9 @@
 * Client Design
 * Nathaniel B. Yost
 ***************************************************************************************/
-Get 2 command line arguments hostname/ip port
-Create Socket
-Connect to server using command line arguments
+DONE -> Get 2 command line arguments hostname/ip port
+DONE -> Create Socket
+DONE -> Connect to server using command line arguments
 get HELLO message from server
 prompt a nickname from user
 send NICK to server to let it know client is sending a nickname

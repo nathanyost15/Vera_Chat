@@ -24,10 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.ListModel;
 import javax.swing.Timer;
-
-import threads.IOThread;
 
 /**
  *
@@ -35,177 +32,22 @@ import threads.IOThread;
  */
 public class Client extends JFrame
 {
-	// Variables declaration
-	private JTextField inputField;
-	private JList<String> outputList;
-	private JScrollPane outputPanel;
-	private JPanel panel;
-	private JButton sendButton;
-	private DefaultListModel<String> outputModel;
-	
-	private Socket socket;
-	private InputStream inStream;
-	private OutputStream outStream;
-	private Timer timer;
-
-	// End of variables declaration
-	public Client(String host, int port)
+	NFunction functions;
+	public Client()
 	{
-		try
-		{
-			socket = new Socket(host, port);
-			inStream = socket.getInputStream();
-			outStream = socket.getOutputStream();
-		} 
-		catch (ConnectException e) {System.err.println("Connection Refused!"); System.exit(-1);}
-		catch (UnknownHostException e) {System.err.println("Check hostname and try again!"); System.exit(-1);} 
-		catch (IOException e) {e.printStackTrace(); System.exit(-1);}
-		outputModel = new DefaultListModel<String>();
-		initComponents();
-	}
-
-	private void initComponents()
-	{
-		// Initialize all components
-		panel = new javax.swing.JPanel();
-		outputPanel = new JScrollPane();
-		outputList = new JList<String>(outputModel);
-		inputField = new JTextField();
-		sendButton = new JButton();
-		ActionListener timeListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				timeListenerActionPerformed(e);
-			}
-		};
-		timer = new Timer(500, timeListener);
-		timer.setRepeats(true);
-		timer.start();
-
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		outputPanel.setViewportView(outputList);
-
-		sendButton.setText("Send");
-		sendButton.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				sendButtonActionPerformed(e);				
-			}
-		});
-
-		GroupLayout panelLayout = new GroupLayout(panel);
-		panel.setLayout(panelLayout);
-		panelLayout.setHorizontalGroup(panelLayout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(panelLayout.createSequentialGroup().addContainerGap()
-						.addGroup(panelLayout
-								.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(panelLayout.createSequentialGroup()
-										.addComponent(inputField,
-												GroupLayout.PREFERRED_SIZE, 405,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(18, 18, 18)
-										.addComponent(sendButton))
-								.addComponent(outputPanel))
-						.addContainerGap()));
-		panelLayout.setVerticalGroup(panelLayout
-				.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(panelLayout.createSequentialGroup()
-						.addComponent(outputPanel, GroupLayout.PREFERRED_SIZE,
-								250, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-								35, Short.MAX_VALUE)
-						.addGroup(panelLayout
-								.createParallelGroup(
-										GroupLayout.Alignment.BASELINE)
-								.addComponent(inputField,
-										GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(sendButton))));
-
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-		layout.setVerticalGroup(layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE,
-						javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-
-		pack();
-		setResizable(false);
-		setVisible(true);
+		functions = new NFunction();
 	}
 	
-	public void sendButtonActionPerformed(ActionEvent e)
-	{	
-		new Thread(){
-			@Override
-			public void run()
-			{
-				byte[] buffer = inputField.getText().getBytes();
-				
-				// Clear input textField
-				inputField.setText("");
-				
-				try
-				{
-					outStream.write(buffer);
-				} 
-				catch(SocketException exception) {exception.printStackTrace();outputModel.addElement("Connection to server lost..");}
-				catch (IOException exception) {exception.printStackTrace();}	
-			}
-		}.start();		
-	}
+	public boolean connect(String host, int port)
+	{
+		functions.connect(host, port);
+		if((functions.recv()).equalsIgnoreCase("HELLO"))
+			return true;
+		return false;
+	}	
 	
-	public void timeListenerActionPerformed(ActionEvent e)
+	public void createUser()
 	{
-		new Thread(){
-			@Override
-			public void run()
-			{
-				String message = "";
-				int character = 0;
-				try
-				{
-					if((character = inStream.read()) != -1)
-					{
-						message += (char)character;
-					}
-					else
-						return;
-				} 
-				catch (IOException exception) {exception.printStackTrace(); System.exit(-1);}
-				outputModel.addElement(message);
-				if(outputModel.size() > 50)
-				{
-					outputModel.remove(0);
-				}
-			}
-		}.start();		
-	}
-
-	public static void main(String[] args)
-	{
-		switch(args.length)
-		{
-			case 2:
-				break;
-			case 1:
-				System.out.println("Missing second argument!");
-			default:
-				System.out.println("Usage: hostname/ip port");
-				System.exit(-1);
-				
-		}
-		Client client = new Client(args[0], Integer.parseInt(args[1]));
+		
 	}
 }
