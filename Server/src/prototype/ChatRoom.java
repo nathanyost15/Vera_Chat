@@ -22,7 +22,7 @@ public class ChatRoom
 	{
 		for(User u : users)
 		{
-			if(u.getUser().equalsIgnoreCase(username))
+			if(u.getUser() != null && u.getUser().equalsIgnoreCase(username))
 				return false;
 		}
 		return true;
@@ -36,7 +36,7 @@ public class ChatRoom
 				@Override
 				public void run()
 				{
-					u.send(message);
+					u.echoMessage(message);
 				}
 			}.start();
 		}

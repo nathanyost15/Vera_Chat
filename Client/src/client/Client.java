@@ -46,8 +46,27 @@ public class Client extends JFrame
 		return false;
 	}	
 	
-	public void createUser()
+	public boolean checkUsername(String user)
 	{
-		
+		functions.send("NICK");
+		String answer = functions.sendrecv(user);
+		if(answer.equalsIgnoreCase("READY"))
+			return true;
+		else if(answer.equalsIgnoreCase("RETRY"))
+			System.err.println("Username is not unique!");
+		else
+			System.err.println("Error: invalid response [" + answer + "]");
+		return false;	
+	}
+	
+	public void echo(String message)
+	{
+		functions.send("ECHO");
+		functions.send(message);
+	}
+
+	public String getMessage() 
+	{
+		return functions.recv();
 	}
 }

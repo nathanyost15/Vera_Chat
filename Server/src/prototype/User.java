@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import utils.NFunction;
 import utils.Timer;
 public class User implements Runnable
 {	
@@ -15,6 +16,7 @@ public class User implements Runnable
 	private String username;
 	private Timer time;
 	private ChatRoom room;
+	private NFunction functions;
 	
 	private boolean ended;
 	public User(ChatRoom room, Socket socket)
@@ -29,9 +31,40 @@ public class User implements Runnable
 		}
 		catch(IOException e) {e.printStackTrace();}
 		time = new Timer();
+		functions = new NFunction(socket);
 	}	
 	
-	// GETTERS
+	public void run()
+	{
+		// Greet client connection
+		functions.send("HELLO");
+		while(!ended)
+		{
+			String request = functions.recvS();
+			System.out.println(request);
+			switch(request)
+			{
+				case "BYE": // Client requests closing of socket
+					System.out.println("Client wants to close");
+					break;
+				case "CRESET": // Connection Reset
+					ended = true;
+					break;
+				case "NICK":
+					getUsername();
+					break;
+				case "ECHO":
+					room.echo("["+ username + "] "+functions.recvS());
+					break;
+			}
+		}
+	}	
+	
+	public void echoMessage(String message)
+	{
+		functions.send(message);
+	}
+	
 	public String getUser()
 	{
 		return username;
@@ -49,74 +82,26 @@ public class User implements Runnable
 	
 	public void getUsername()
 	{
-		System.out.println("Started getting Username");
-		String tempUser = "";
 		try
 		{									
 			while(true)
 			{
-				int character = 0;
-				while((character = inStream.read()) != -1 && tempUser != "")
+				String name = functions.recv();
+				if(room.isUnique(name))
 				{
-					tempUser += (char)character;
-					System.out.println(tempUser);
+					functions.send("READY");
+					username = name;
+					return;
 				}
-				if(room.isUnique(tempUser))
-					break;
 				else						
-					outStream.write(-1);						
+				{
+					functions.send("RETRY");
+				}
 			}					
 		}			
+		catch(NullPointerException exception) {System.err.println("Null reference error"); closeSocket();}
 		catch(Exception exception){closeSocket();}
-		username = tempUser;
 	}
-	
-	public void run()
-	{
-		send("HELLO");
-		/*getUsername();
-		System.out.println("Done getting username");
-		while(!ended)
-		{
-			try
-			{
-				// if it writes a 0 to client, connection is active otherwise SocketException thrown and closes thread and socket.
-				
-				outStream.write(1);
-				outStream.flush();
-				
-				byte[] buffer = new byte[500];
-				inStream.read(buffer);	
-				String message = new String(buffer, "UTF-8");
-				message = message.trim();
-				room.echo(message);
-			}
-			catch(SocketException e)
-			{
-				System.out.println("Connection on thread: " + username + " was terminated by client..");
-				ended = true;
-				break;
-			}
-			catch(IOException e) 
-			{
-				System.out.println("Connection on thread: " + username + " was terminated by server..");
-				ended = true;
-				break;		
-			}			
-		}
-		closeSocket();
-		ended = true;*/
-	}
-	
-	public void send(String message)
-	{
-		message += ";";
-		try
-		{
-			outStream.write(message.getBytes("UTF-8"));
-		} 
-		catch (IOException e) {e.printStackTrace();}		
-	}		
 	
 	private boolean closeSocket()
 	{

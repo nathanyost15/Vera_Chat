@@ -1,9 +1,12 @@
 package client;
 
+import java.util.Scanner;
+
 public class Driver 
 {
 	public static void main(String[] args)
 	{
+		Scanner scan = new Scanner(System.in);
 		switch(args.length)
 		{
 			case 2:
@@ -21,9 +24,19 @@ public class Driver
 		boolean connected = client.connect(host, port);
 		
 		if(connected)
+		{
 			System.out.println("Server has responded with HELLO!");
+			System.out.println("Enter username");
+			while(!client.checkUsername(scan.nextLine()))
+			{
+				System.out.println("Enter username");
+			}
+			System.out.println("Username is unique");
+		}
 		else
-			System.out.println("Server has not responded!");
+			System.out.println("Server has not responded with HELLO!");
+		client.echo(scan.nextLine());
+		System.out.println(client.getMessage());
 		System.exit(0);
 	}
 }

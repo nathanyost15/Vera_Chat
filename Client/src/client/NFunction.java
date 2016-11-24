@@ -36,25 +36,39 @@ public class NFunction
 		catch(IOException exception){System.err.println("Could not connect to " + host + " on port "+ port + "."); System.exit(-1);}
 	}
 	
+	public void send(String send)
+	{
+		try
+		{
+			send += ";";
+			out.write(send.getBytes("UTF-8"));
+		}
+		catch(IOException exception) {exception.printStackTrace();}		
+	}
+	
 	/**
 	 * Send a string and wait for a return of a string from other connection.
 	 */
 	public String sendrecv(String send)
 	{		
 		String answer = "";
+		TimeOut timeout = new TimeOut(10);
 		try 
-		{
+		{			
 			// Send message
+			send += ";";
 			out.write(send.getBytes());
 			
 			// Receive message
-			int character =0;			
+			int character =0;
+			//timeout.start();
 			while((character = in.read()) != -1)
 			{
 				if((char)character == ';')
 					break;
 				answer += (char)character;
 			}
+			//timeout.end();
 		} 
 		catch (IOException e) {e.printStackTrace();}
 		return answer;
