@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import utils.NFunction;
 import utils.Timer;
 public class User implements Runnable
 {	
@@ -15,12 +16,12 @@ public class User implements Runnable
 	private String username;
 	private Timer time;
 	private ChatRoom room;
+	private NFunction functions;
 	
 	private boolean ended;
 	public User(ChatRoom room, Socket socket)
 	{		
 		this.room = room;
-		this.username = username;
 		ended = false;
 		this.socket = socket;
 		try
@@ -30,6 +31,7 @@ public class User implements Runnable
 		}
 		catch(IOException e) {e.printStackTrace();}
 		time = new Timer();
+		functions = new NFunction(socket);
 	}	
 	
 	// GETTERS
@@ -56,6 +58,7 @@ public class User implements Runnable
 		{									
 			while(true)
 			{
+				functions.recv();
 				int character = 0;
 				while((character = inStream.read()) != -1 && tempUser != "")
 				{
@@ -74,9 +77,26 @@ public class User implements Runnable
 	
 	public void run()
 	{
-		getUsername();
-		System.out.println("Done getting username");
-		while(true)
+		send("HELLO");
+		while(!ended)
+		{
+			String request = functions.recvS();
+			System.out.println(request);
+			switch(request)
+			{
+				case "BYE":
+					System.out.println("Client wants to close");
+					break;
+				case "CRESET":
+					System.out.println("Connection reset to client");
+					ended = true;
+					break;
+			}
+		}
+		//getUsername();
+		//System.out.println("Done getting username");
+		/*
+		while(!ended)
 		{
 			try
 			{
@@ -94,7 +114,6 @@ public class User implements Runnable
 			catch(SocketException e)
 			{
 				System.out.println("Connection on thread: " + username + " was terminated by client..");
-				//System.out.println("Error writing to socket closing thread: " + threadID + "..");
 				ended = true;
 				break;
 			}
@@ -106,19 +125,17 @@ public class User implements Runnable
 			}			
 		}
 		closeSocket();
-		ended = true;
+		ended = true;*/
 	}
 	
 	public void send(String message)
 	{
-		for(int index = 0; index < message.length(); index++)
+		message += ";";
+		try
 		{
-			try
-			{
-				outStream.write((int)message.charAt(index));
-			} 
-			catch (IOException e) {e.printStackTrace();}
-		}
+			outStream.write(message.getBytes("UTF-8"));
+		} 
+		catch (IOException e) {e.printStackTrace();}		
 	}		
 	
 	private boolean closeSocket()
