@@ -26,13 +26,16 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 
+import gui.GUI;
+
 /**
  *
  * @author nyost448
  */
 public class Client extends JFrame
 {
-	NFunction functions;
+	private NFunction functions;
+	private GUI gui;
 	public Client()
 	{
 		functions = new NFunction();

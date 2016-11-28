@@ -45,16 +45,20 @@ public class User implements Runnable
 			switch(request)
 			{
 				case "BYE": // Client requests closing of socket
-					System.out.println("Client wants to close");
+					room.echo("["+ username + "] " + " has left the room..");
+					closeSocket();
+					ended = true;
 					break;
 				case "CRESET": // Connection Reset
+					room.echo("["+ username + "] " + " has left the room..");
+					closeSocket();
 					ended = true;
 					break;
 				case "NICK":
 					getUsername();
 					break;
-				case "ECHO":
-					room.echo("["+ username + "] "+functions.recvS());
+				default:
+					room.echo("["+ username + "] "+request);
 					break;
 			}
 		}
@@ -86,10 +90,14 @@ public class User implements Runnable
 		{									
 			while(true)
 			{
+				System.out.println("Getting ready to receive username");
 				String name = functions.recv();
+				System.out.println("Received username!");
 				if(room.isUnique(name))
 				{
+					System.out.println("Sending READY");
 					functions.send("READY");
+					System.out.println("READY sent");
 					username = name;
 					return;
 				}
