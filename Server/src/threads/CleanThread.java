@@ -32,7 +32,7 @@ public class CleanThread extends Thread
 			return;
 		for(int index = 0; index < activeConnections.size(); index++)
 		{
-			if(activeConnections.get(index).isDone())
+			if(activeConnections.get(index).getDone())
 			{
 				activeConnections.remove(index);
 				count++;

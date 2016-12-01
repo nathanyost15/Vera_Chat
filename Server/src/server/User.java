@@ -6,21 +6,33 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import utils.NFunction;
 import utils.Timer;
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: User is given an independent thread to communicate back and forth 
+ * 			with the server and other clients.
+ */
 public class User implements Runnable
 {	
 	private Socket socket;
 	private InputStream inStream;
 	private OutputStream outStream;
-	private String name;
+	private String username;
 	private Timer time;
-	private int threadID;
+	private ChatRoom room;
+	private NFunction functions;
+	
 	private boolean ended;
-	public User(Socket socket, int currentThread)
+	private final String[] CMDS = {"BYE", "HELP"};
+	public User(ChatRoom room, Socket socket)
 	{		
+		this.room = room;
 		ended = false;
 		this.socket = socket;
-		threadID = currentThread;
 		try
 		{
 			inStream = socket.getInputStream();
@@ -28,11 +40,45 @@ public class User implements Runnable
 		}
 		catch(IOException e) {e.printStackTrace();}
 		time = new Timer();
+		functions = new NFunction(socket);
+	}	
+	
+	public void run()
+	{
+		// Greet client connection
+		functions.send("HELLO");
+		getUsername();
+		room.echo("["+ username + "] " + " has joined the room..");
+		while(!ended)
+		{
+			String request = functions.recvS();
+			//System.out.println(request);
+			switch(request)
+			{
+				case "BYE": // Client requests closing of socket
+					room.echo("["+ username + "] " + " has left the room..");
+					closeSocket();
+					ended = true;
+					break;
+				case "HELP":
+					for(String s : CMDS)
+						echoMessage(s);
+					break;
+				default:
+					room.echo("["+ username + "] "+request);
+					break;
+			}
+		}
+	}	
+	
+	public void echoMessage(String message)
+	{
+		functions.send(message);
 	}
 	
-	public int getThreadID()
+	public String getUser()
 	{
-		return threadID;
+		return username;
 	}
 	
 	public Socket getSocket()
@@ -40,44 +86,32 @@ public class User implements Runnable
 		return socket;
 	}
 	
-	public void run()
-	{
-		while(true)
-		{
-			try
-			{
-				// if it writes a 0 to client, connection is active otherwise SocketException thrown and closes thread and socket.
-				
-				outStream.write(1);
-				outStream.flush();
-				
-				byte[] buffer = new byte[500];
-				inStream.read(buffer);	
-				String message = new String(buffer, "UTF-8");
-				message = message.trim();
-				System.out.println(message.trim());
-			}
-			catch(SocketException e)
-			{
-				System.out.println("Connection on thread: " + threadID + " was terminated by client..");
-				//System.out.println("Error writing to socket closing thread: " + threadID + "..");
-				ended = true;
-				break;
-			}
-			catch(IOException e) 
-			{
-				System.out.println("Connection on thread: " + threadID + " was terminated by server..");
-				ended = true;
-				break;		
-			}			
-		}
-		closeSocket();
-		ended = true;
-	}
-	
-	public boolean isDone()
+	public boolean getDone()
 	{
 		return ended;
+	}
+	
+	public void getUsername()
+	{
+		try
+		{									
+			while(true)
+			{
+				String name = functions.recvS();
+				if(room.isUnique(name))
+				{
+					functions.send("READY");
+					username = name;
+					return;
+				}
+				else						
+				{
+					functions.send("RETRY");
+				}
+			}					
+		}			
+		catch(NullPointerException exception) {System.err.println("Null reference error"); closeSocket();}
+		catch(Exception exception){closeSocket();}
 	}
 	
 	private boolean closeSocket()

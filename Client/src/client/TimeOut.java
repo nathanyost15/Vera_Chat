@@ -19,7 +19,7 @@ public class TimeOut extends Thread
 		{
 			Thread.sleep(timeout);
 		} 
-		catch (InterruptedException e) {e.printStackTrace();}
+		catch (InterruptedException e) {}
 		if(!stop)
 		{
 			System.err.println("Timeout has occurred!");
@@ -30,5 +30,6 @@ public class TimeOut extends Thread
 	public void end()
 	{
 		stop = true;
+		this.interrupt();
 	}
 }
