@@ -79,6 +79,7 @@ public class NFunction
 			}
 			timeout.end();
 		} 
+		catch(SocketException exception) {return "BYE";}
 		catch (IOException e) {e.printStackTrace();}
 		return answer;
 	}
@@ -100,6 +101,7 @@ public class NFunction
 			}
 			timeout.end();
 		} 
+		catch(SocketException exception) {}
 		catch (IOException e) {e.printStackTrace();}
 		return answer;
 	}
@@ -118,7 +120,7 @@ public class NFunction
 				answer += (char)character;				
 			}
 		} 
-		catch (SocketException exception) {System.err.println("Connection reset"); return "CRESET";}
+		catch (SocketException exception) {return "BYE";}
 		catch (IOException e) {e.printStackTrace();}
 		return answer;
 	}

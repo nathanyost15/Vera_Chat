@@ -54,34 +54,32 @@ public class GUI extends JFrame
 		functions.connect(host, port);
 		// Receive Hello message
 		String answer = functions.recv();
-		outputModel.addElement(answer);
 		if(!answer.equalsIgnoreCase("HELLO"))
 		{
 			outputModel.addElement("Could not connect to server!");
 		}
 		else
 		{
-			outputModel.addElement("Successfully connected to \nServer: " + host + "\nPort: " + port);
-			outputModel.addElement("type NICK and hit Enter");
+			outputModel.addElement("Successfully connected to \nServer: " + host + " Port: " + port);
 			outputModel.addElement("type desired username and Enter.");
 		}
 		reader = new Thread(){
 			@Override
 			public void run()
 			{
+				boolean started = false;
 				while(true)
 				{
-					System.out.println("Attempting to get output");
 					String answer = functions.recvS();
-					System.out.println("GOT OUTPUT");
+					
+					if(answer.equalsIgnoreCase(""))
+					{
+						outputModel.addElement("Connection to server ended..");
+						return;
+					}
 					outputModel.addElement(answer);
-					if(outputModel.size() >13)
+					while(outputModel.size() > 13)
 						outputModel.remove(0);
-//					if(answer == null)
-//					{
-//						outputModel.addElement("Server connection is reset!");
-//						break;
-//					}
 				}				
 			}
 		};
@@ -161,15 +159,15 @@ public class GUI extends JFrame
 	
 	public void sendButtonActionPerformed(ActionEvent e)
 	{	
-		new Thread(){
-			@Override
-			public void run()
-			{				
+		//new Thread(){
+			//@Override
+			//public void run()
+			//{				
 				functions.send(inputField.getText());
 				inputField.setText("");
 				inputField.requestFocusInWindow();
-			}
-		}.start();		
+			//}
+		//}.start();		
 	}
 	
 	public static void main(String[] args)

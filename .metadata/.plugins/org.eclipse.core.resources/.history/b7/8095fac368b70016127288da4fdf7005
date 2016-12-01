@@ -1,0 +1,59 @@
+package server;
+
+import java.net.Socket;
+import java.util.ArrayList;
+
+import threads.CleanThread;
+
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: Chatroom keeps track of all users in a list object and allows ease of communication between separate clients.
+ * 			Chatroom also cleans up stale connections using the CleanThread.
+ */
+public class ChatRoom
+{
+	private ArrayList<User> users;
+	private CleanThread maitenance;
+	/**
+	 *  Initializes the chatroom that will hold users and clean stale connections.
+	 */
+	public ChatRoom()
+	{
+		users = new ArrayList<User>();
+		maitenance = new CleanThread(users, 10_000);
+		maitenance.start();		
+	}
+	
+	public void addUser(Socket clientSocket)
+	{
+		users.add(new User(this, clientSocket));
+		new Thread(users.get(users.size()-1)).start();
+	}
+	
+	public boolean isUnique(String username)
+	{
+		for(User u : users)
+		{
+			if(u.getUser() != null && u.getUser().equalsIgnoreCase(username))
+				return false;
+		}
+		return true;
+	}
+	
+	public void echo(String message)
+	{
+		for(User u : users)
+		{
+			new Thread(){
+				@Override
+				public void run()
+				{
+					u.echoMessage(message);
+				}
+			}.start();
+		}
+	}
+}

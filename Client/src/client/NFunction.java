@@ -121,10 +121,10 @@ public class NFunction
 			{
 				if((char)character == ';')
 					break;
-				answer += (char)character;				
-			}
+				answer += (char)character;
+			}			
 		} 
-		catch (SocketException exception) {System.err.println("Connection reset"); return "CRESET";}
+		catch (SocketException exception) {System.out.println("Connection ended!");}
 		catch (IOException e) {e.printStackTrace();}
 		return answer;
 	}
