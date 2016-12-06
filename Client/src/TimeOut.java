@@ -1,0 +1,35 @@
+
+
+public class TimeOut extends Thread
+{
+	private Timer timer;
+	private int timeout;
+	boolean stop;
+	public TimeOut(int timeout)
+	{
+		this.timeout = timeout * 1000;
+		timer = new Timer();
+		stop = false;
+	}
+	
+	@Override
+	public void run()
+	{
+		try 
+		{
+			Thread.sleep(timeout);
+		} 
+		catch (InterruptedException e) {}
+		if(!stop)
+		{
+			System.err.println("Timeout has occurred!");
+			System.exit(-1);
+		}
+	}
+	
+	public void end()
+	{
+		stop = true;
+		this.interrupt();
+	}
+}

@@ -1,0 +1,88 @@
+
+
+import java.net.Socket;
+import java.util.ArrayList;
+
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: Chatroom keeps track of all users in a list object and allows ease of communication between separate clients.
+ * 			Chatroom also cleans up stale connections using the CleanThread.
+ */
+public class ChatRoom
+{
+	private ArrayList<User> users;
+	private CleanThread maitenance;
+	/**
+	 *  Initializes the chatroom that will hold users and clean stale connections.
+	 */
+	public ChatRoom()
+	{
+		users = new ArrayList<User>();
+		maitenance = new CleanThread(users, 10_000);
+		maitenance.start();		
+	}
+	
+	/**
+	 * Adds new clientSocket to list of users and starts the thread to handle that new connection.
+	 * @param clientSocket Socket that is connected to new user connection to server.
+	 */
+	public void addUser(Socket clientSocket)
+	{
+		users.add(new User(this, clientSocket));
+		new Thread(users.get(users.size()-1)).start();
+	}
+	
+	/**
+	 * Takes username parameter and sees if there is another user with that username, if no other 
+	 * user has that name it returns true else false.
+	 * @param username Username that will be tested for its uniqueness.
+	 * @return Boolean on whether provided username is unique or not.
+	 */
+	public boolean isUnique(String username)
+	{
+		for(User u : users)
+		{
+			if(u.getUser() != null && u.getUser().equalsIgnoreCase(username))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Echoes message provided from one user to all other users in chatroom.
+	 * @param message
+	 */
+	public void echo(String message)
+	{
+		for(User u : users)
+		{
+			new Thread()
+			{
+				@Override
+				public void run()
+				{
+					if(u.getUser() != null )
+						u.echoMessage(message);
+				}
+			}.start();
+		}
+	}
+
+	public ArrayList<User> getUsers() 
+	{
+		return users;
+	}
+
+	public String[] getNames() 
+	{
+		String[] names = new String[users.size()];
+		for(int index =0; index < users.size(); index++)
+		{
+			names[index] = users.get(index).getUser() != null ? users.get(index).getUser() : "";
+		}
+		return names;
+	}
+}

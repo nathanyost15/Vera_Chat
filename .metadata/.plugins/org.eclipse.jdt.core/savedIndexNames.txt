@@ -13,7 +13,6 @@ INDEX VERSION 1.129+C:\Users\nathan\Google Drive\Vera_Chat\.metadata\.plugins\or
 1004716384.index
 2831536327.index
 2167310551.index
-137624701.index
 3172068124.index
 4166838873.index
 486699731.index
