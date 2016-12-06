@@ -5,14 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-
- /**
- * @author Nathaniel Yost
- * Dr. Frye
- * CSC328
- * DUE: 5 December 2016
- * Purpose: Used for most network functionality, sending/receiving data between sockets etc.
- */
+/**
+* @author Nathaniel Yost
+* Dr. Frye
+* CSC328
+* DUE: 5 December 2016
+* Purpose: Used for most network functionality, sending/receiving data between sockets etc.
+*/
 public class NFunction 
 {
 	private Socket socket;
@@ -61,6 +60,10 @@ public class NFunction
 		catch(IOException exception){System.err.println("Could not connect to " + host + " on port "+ port + "."); System.exit(-1);}
 	}
 	
+	/**
+	 * Sends a string to connected socket.
+	 * @param send String that will be sent to connected socket.
+	 */
 	public void send(String send)
 	{
 		try
@@ -73,7 +76,9 @@ public class NFunction
 	}
 	
 	/**
-	 * Send a string and wait for a return of a string from other connection.
+	 * Send a string and listen for a reply immediately after.
+	 * @param send String that will be sent to connected socket.
+	 * @return String reply from connected socket.
 	 */
 	public String sendrecv(String send)
 	{		
@@ -102,6 +107,10 @@ public class NFunction
 		return answer;
 	}
 	
+	/**
+	 * Receives a string from connected socket, and checks for time outs in communicating with connected socket.
+	 * @return String reply from connected socket.
+	 */
 	public String recv()
 	{
 		String answer = "";
@@ -124,6 +133,10 @@ public class NFunction
 		return answer;
 	}
 	
+	/**
+	 * Receives a string from connected socket, with no timeouts. *S stands for server which won't timeout and crash server.
+	 * @return String reply from connected socket.
+	 */
 	public String recvS()
 	{
 		String answer = "";
@@ -143,6 +156,9 @@ public class NFunction
 		return answer;
 	}
 	
+	/**
+	 * Closes socket
+	 */
 	public void close()
 	{
 		try
@@ -152,6 +168,10 @@ public class NFunction
 		catch(IOException exception){System.err.println("Could not disconnect");}
 	}
 	
+	/**
+	 * Returns socket object
+	 * @return Socket object that may or may not be connected.
+	 */
 	public Socket getSocket()
 	{
 		return socket;

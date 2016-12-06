@@ -64,7 +64,8 @@ public class ChatRoom
 				@Override
 				public void run()
 				{
-					u.echoMessage(message);
+					if(u.getUser() != null )
+						u.echoMessage(message);
 				}
 			}.start();
 		}

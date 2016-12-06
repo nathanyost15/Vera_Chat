@@ -33,7 +33,7 @@ public class Server
 	}
 	
 	/**
-	 * Infinite loop that continually listens for incoming connectins and supplies each connection with a new thread (ie: User object).
+	 * Infinite loop that continually listens for incoming connections and supplies each connection with a new thread (ie: User object).
 	 */
 	public void run()
 	{

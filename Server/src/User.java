@@ -15,9 +15,7 @@ import java.net.SocketException;
  */
 public class User implements Runnable
 {	
-	private Socket socket;
 	private String username;
-	private Timer time;
 	private ChatRoom room;
 	private NFunction functions;
 	
@@ -27,8 +25,6 @@ public class User implements Runnable
 	{		
 		this.room = room;
 		ended = false;
-		this.socket = socket;
-		time = new Timer();
 		functions = new NFunction(socket);
 	}	
 	
@@ -45,9 +41,10 @@ public class User implements Runnable
 			switch(request)
 			{
 				case "BYE": // Client requests closing of socket
-					room.echo("["+ username + "] " + " has left the room..");
+					echoMessage("BYE");
 					closeSocket();
-					ended = true;
+					room.echo("["+ username + "] " + " has left the room..");
+					ended = true;					
 					break;
 				case "HELP":
 					echoMessage("Commands");
@@ -55,12 +52,12 @@ public class User implements Runnable
 						echoMessage(s);
 					break;
 				case "USERS":
+					echoMessage("Users in chat:");
 					for(String s : room.getNames())
-					{
 						echoMessage(s);
-					}
 					break;
 				case "COUNT":
+					echoMessage("Users in chat:");
 					echoMessage(room.getUsers().size()+"");
 					break;
 				default:
@@ -82,7 +79,7 @@ public class User implements Runnable
 	
 	public Socket getSocket()
 	{
-		return socket;
+		return functions.getSocket();
 	}
 	
 	public boolean getDone()
@@ -113,13 +110,8 @@ public class User implements Runnable
 		catch(Exception exception){closeSocket();}
 	}
 	
-	private boolean closeSocket()
+	private void closeSocket()
 	{
-		try
-		{
-			socket.close();
-			return true;
-		}
-		catch(IOException e){e.printStackTrace(); return false;}
+		functions.close();
 	}
 }
