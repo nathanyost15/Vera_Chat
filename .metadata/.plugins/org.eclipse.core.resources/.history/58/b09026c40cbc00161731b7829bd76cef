@@ -37,6 +37,7 @@ public class User implements Runnable
 		while(!ended)
 		{
 			String request = functions.recvS();
+			//System.out.println(request);
 			switch(request)
 			{
 				case "BYE": // Client requests closing of socket
@@ -94,8 +95,7 @@ public class User implements Runnable
 			while(true)
 			{
 				String name = functions.recvS();
-				boolean unique = room.isUnique(name);
-				if(unique && name.length() >= 3)
+				if(room.isUnique(name))
 				{
 					functions.send("READY");
 					username = name;
@@ -103,10 +103,6 @@ public class User implements Runnable
 				}
 				else						
 				{
-					if(name.length() < 3)
-						functions.send("Username must be 3 or more characters!");
-					if(!unique)
-						functions.send(name + " is already taken!");
 					functions.send("RETRY");
 				}
 			}					

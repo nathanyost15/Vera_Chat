@@ -94,8 +94,7 @@ public class User implements Runnable
 			while(true)
 			{
 				String name = functions.recvS();
-				boolean unique = room.isUnique(name);
-				if(unique && name.length() >= 3)
+				if(room.isUnique(name) && name.length() >= 3)
 				{
 					functions.send("READY");
 					username = name;
@@ -105,8 +104,6 @@ public class User implements Runnable
 				{
 					if(name.length() < 3)
 						functions.send("Username must be 3 or more characters!");
-					if(!unique)
-						functions.send(name + " is already taken!");
 					functions.send("RETRY");
 				}
 			}					

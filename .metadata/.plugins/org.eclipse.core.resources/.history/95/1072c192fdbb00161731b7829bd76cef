@@ -69,17 +69,13 @@ public class GUI extends JFrame
 				while(true)
 				{
 					String answer = functions.recvS();
+					System.out.println(answer);
 					if(answer.equalsIgnoreCase("BYE") && !showCommands)
 					{
 						updateList("Connection to server ended..");
 						return;
 					}
-					if(answer.equalsIgnoreCase("DONE HELP"))
-					{
-						showCommands = false;
-						continue;
-					}
-					updateList(answer);
+					outputModel.addElement(answer);
 					
 				}				
 			}

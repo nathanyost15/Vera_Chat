@@ -30,7 +30,6 @@ public class GUI extends JFrame
 	
 	private NFunction functions;
 	private Thread reader;
-	private boolean showCommands;
 
 	/**
 	 * Initializes components for swing gui and client objects ie: NFunctions
@@ -69,23 +68,18 @@ public class GUI extends JFrame
 				while(true)
 				{
 					String answer = functions.recvS();
-					if(answer.equalsIgnoreCase("BYE") && !showCommands)
+					System.out.println(answer);
+					if(answer.equalsIgnoreCase(""))
 					{
 						updateList("Connection to server ended..");
 						return;
 					}
-					if(answer.equalsIgnoreCase("DONE HELP"))
-					{
-						showCommands = false;
-						continue;
-					}
-					updateList(answer);
+					outputModel.addElement(answer);
 					
 				}				
 			}
 		};
 		reader.start();
-		showCommands = false;
 	}
 
 	private void initComponents()
@@ -114,11 +108,11 @@ public class GUI extends JFrame
 		GroupLayout panelLayout = new GroupLayout(panel);
 		panel.setLayout(panelLayout);
 		panelLayout.setHorizontalGroup(panelLayout
-				.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(panelLayout.createSequentialGroup().addContainerGap()
 						.addGroup(panelLayout
 								.createParallelGroup(
-										GroupLayout.Alignment.LEADING)
+										javax.swing.GroupLayout.Alignment.LEADING)
 								.addGroup(panelLayout.createSequentialGroup()
 										.addComponent(inputField,
 												GroupLayout.PREFERRED_SIZE, 405,
@@ -150,9 +144,9 @@ public class GUI extends JFrame
 						.addComponent(panel, GroupLayout.DEFAULT_SIZE,
 								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 		layout.setVerticalGroup(layout
-				.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE,
-						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 
 		pack();
 		setResizable(false);
@@ -164,16 +158,13 @@ public class GUI extends JFrame
 		new Thread(){
 			@Override
 			public void run()
-			{	
-				String input = inputField.getText();
-				if(input == null || input.equalsIgnoreCase(""))
+			{		
+				if(inputField.getText() == null || inputField.getText().equalsIgnoreCase(""))
 				{
 					System.out.println("NULL");
 					return;
 				}
-				if(input.equalsIgnoreCase("HELP"))
-					showCommands = true;
-				functions.send(input);
+				functions.send(inputField.getText());
 				inputField.setText("");
 				inputField.requestFocusInWindow();
 			}

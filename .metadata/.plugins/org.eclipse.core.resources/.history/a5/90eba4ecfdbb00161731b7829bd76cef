@@ -69,6 +69,7 @@ public class GUI extends JFrame
 				while(true)
 				{
 					String answer = functions.recvS();
+					System.out.println(answer);
 					if(answer.equalsIgnoreCase("BYE") && !showCommands)
 					{
 						updateList("Connection to server ended..");
@@ -79,7 +80,7 @@ public class GUI extends JFrame
 						showCommands = false;
 						continue;
 					}
-					updateList(answer);
+					outputModel.addElement(answer);
 					
 				}				
 			}
