@@ -1,0 +1,14 @@
+Bug List
+Month, Year, Name       // Template
+Description             // Template
+
+December, 2016, Blank Screen
+Sometimes when running multiple Clients the Jlist/text disappears and is left blank.
+After entering in more text or someone else responding the text reappears again.
+
+November, 2016, Truncate output
+Output to client is truncated with a suffix ... when too many characters are sent 
+from server to client.
+
+November, 2016, Semicolon
+When typing and sending semicolons from client to server it adds a new line.
