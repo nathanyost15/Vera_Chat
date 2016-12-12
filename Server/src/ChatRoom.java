@@ -21,7 +21,7 @@ public class ChatRoom
 	public ChatRoom()
 	{
 		users = new ArrayList<User>();
-		maitenance = new CleanThread(users, 10_000);
+		maitenance = new CleanThread(users, 10);
 		maitenance.start();		
 	}
 	
@@ -70,18 +70,27 @@ public class ChatRoom
 			}.start();
 		}
 	}
-
+	
+	/**
+	 * Returns all users in the current chat room.
+	 * @return ArrayList collection of all users in the chatroom.
+	 */
 	public ArrayList<User> getUsers() 
 	{
 		return users;
 	}
 
+	/**
+	 * Returns all users in the current chat room.
+	 * @return String[] array of all users in the chatroom.
+	 */
 	public String[] getNames() 
 	{
 		String[] names = new String[users.size()];
 		for(int index =0; index < users.size(); index++)
 		{
-			names[index] = users.get(index).getUser() != null ? users.get(index).getUser() : "";
+			String user =  users.get(index).getUser();
+			names[index] = user != null ? user : "";
 		}
 		return names;
 	}

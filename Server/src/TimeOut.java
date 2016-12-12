@@ -1,10 +1,20 @@
-
-
+/**
+* @author Nathaniel Yost
+* Dr. Frye
+* CSC328
+* DUE: 5 December 2016
+* Purpose: Keeps track of time and if it isn't stopped it will printout a timeout occurrence.
+*/
 public class TimeOut extends Thread
 {
 	private Timer timer;
 	private int timeout;
-	boolean stop;
+	private boolean stop;
+	
+	/**
+	 * Initializes the TimeOut object with a specific duration for the timeout.
+	 * @param timeout Length of time in seconds until the timeout occurs.
+	 */
 	public TimeOut(int timeout)
 	{
 		this.timeout = timeout * 1000;
@@ -12,6 +22,9 @@ public class TimeOut extends Thread
 		stop = false;
 	}
 	
+	/**
+	 * Method called bye the thread.start() which will start the thread.
+	 */
 	@Override
 	public void run()
 	{
@@ -26,6 +39,9 @@ public class TimeOut extends Thread
 		}
 	}
 	
+	/**
+	 * Method used to prevent the timeout and it reawakens the thread by sending it an interrupt.
+	 */
 	public void end()
 	{
 		stop = true;

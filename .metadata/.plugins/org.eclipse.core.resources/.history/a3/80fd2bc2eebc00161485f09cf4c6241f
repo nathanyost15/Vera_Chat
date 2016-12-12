@@ -1,0 +1,42 @@
+/**
+* @author Nathaniel Yost
+* Dr. Frye
+* CSC328
+* DUE: 5 December 2016
+* Purpose: Keeps track of time and if it isn't stopped it will crash the program due to a timeout occurrence.
+*/
+public class TimeOut extends Thread
+{
+	private Timer timer;
+	private int timeout;
+	private boolean stop;
+	/**
+	 * Initializes the TimeOut object with a specific duration for the timeout.
+	 * @param timeout Length of time in seconds until the timeout occurs.
+	 */
+	public TimeOut(int timeout)
+	{
+		this.timeout = timeout * 1000;
+		timer = new Timer();
+		stop = false;
+	}
+	
+	@Override
+	public void run()
+	{
+		try 
+		{
+			Thread.sleep(timeout);
+		} 
+		catch (InterruptedException e) {e.printStackTrace();}
+		if(!stop)
+		{
+			System.err.println("Timeout has occurred!");
+		}
+	}
+	
+	public void end()
+	{
+		stop = true;
+	}
+}

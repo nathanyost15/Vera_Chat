@@ -1,0 +1,13 @@
+
+public class ShutdownThread extends Thread
+{
+	public ShutdownThread()
+	{	
+	}
+	
+	@Override
+	public void run()
+	{
+		
+	}
+}

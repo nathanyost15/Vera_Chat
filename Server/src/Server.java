@@ -30,6 +30,20 @@ public class Server
 		catch(SocketException exception) {exception.printStackTrace();}
 		catch(IOException exception) {exception.printStackTrace();}
 		room = new ChatRoom();
+		// When server is attempted to shutdown it will default to this thread created below.
+		Runtime.getRuntime().addShutdownHook(new Thread()
+		{
+			@Override
+			public void run()
+			{
+				room.echo("Server is shutting down in 30 seconds!");
+				try
+				{
+					Thread.sleep(30_000);
+				}catch(InterruptedException e){}
+				this.stop();
+			}
+		});
 	}
 	
 	/**
@@ -59,7 +73,7 @@ public class Server
 	 * @param args Command line arguments.
 	 */
 	public static void main(String[] args)
-	{
+	{		
 		// Usage Clause
 		switch(args.length)
 		{

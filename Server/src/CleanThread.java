@@ -1,19 +1,35 @@
 
 
 import java.util.ArrayList;
-
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: Checks for stale connections or closed connections and removes them from the chatroom.
+ */
 public class CleanThread extends Thread
 {
 	private ArrayList<User> activeConnections;
 	private Timer time;
 	private int interval;
+	
+	/**
+	 * Initializes the CleanThread object with all current connections, and how often it should clean the connections.
+	 * @param connections All active connections to the server.
+	 * @param interval How often the CleanThread should clean connections, in seconds.
+	 */
 	public CleanThread(ArrayList<User> connections, int interval)
 	{
 		activeConnections = connections;
 		time = new Timer();
-		this.interval = interval;
+		this.interval = interval * 1_000;
 	}
 	
+	/**
+	 * Daemon thread that will continue to check if its time to clean connections which will eventually remove all 
+	 * old close connections to server.
+	 */
 	@Override
 	public void run()
 	{		
@@ -22,6 +38,9 @@ public class CleanThread extends Thread
 				clean();		
 	}
 	
+	/**
+	 * Iterates through active connections and removes all connections flagged 'DONE'
+	 */
 	private void clean()
 	{
 		int count = 0;
@@ -33,7 +52,9 @@ public class CleanThread extends Thread
 			{
 				activeConnections.remove(index);
 				count++;
-				index--;
+				// ArrayList dynamically changes size when objects are removed so if an object is 
+				// removed it should remain at the same index, as that index now holds a new object.
+				index--; 
 			}
 		}
 		if(count != 0)

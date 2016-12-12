@@ -1,0 +1,128 @@
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketException;
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: User is given an independent thread to communicate back and forth 
+ * 			with the server and other clients.
+ */
+public class User implements Runnable
+{	
+	private String username;
+	private ChatRoom room;
+	private NFunction functions;
+	
+	private boolean ended;
+	private final String[] CMDS = {"BYE", "HELP", "USERS", "COUNT"};
+	
+	/**
+	 * 
+	 * @param room
+	 * @param socket
+	 */
+	public User(ChatRoom room, Socket socket)
+	{		
+		this.room = room;
+		ended = false;
+		functions = new NFunction(socket);
+	}	
+	
+	public void run()
+	{
+		// Greet client connection
+		functions.send("HELLO");
+		getUsername();
+		room.echo("["+ username + "] " + " has joined the room..");
+		while(!ended)
+		{
+			String request = functions.recvS();
+			switch(request)
+			{
+				case "BYE": // Client requests closing of socket
+					echoMessage("BYE");
+					closeSocket();
+					room.echo("["+ username + "] " + " has left the room..");
+					ended = true;					
+					break;
+				case "HELP":
+					echoMessage("Commands");
+					for(String s : CMDS)
+						echoMessage(s);
+					echoMessage("DONE HELP");
+					break;
+				case "USERS":
+					echoMessage("Users in chat:");
+					for(String s : room.getNames())
+						echoMessage(s);
+					break;
+				case "COUNT":
+					echoMessage("Users in chat:");
+					echoMessage(room.getUsers().size()+"");
+					break;
+				default:
+					room.echo("["+ username + "] "+request);
+					break;
+			}
+		}
+	}	
+	
+	public void echoMessage(String message)
+	{
+		functions.send(message);
+	}
+	
+	public String getUser()
+	{
+		return username;
+	}
+	
+	public Socket getSocket()
+	{
+		return functions.getSocket();
+	}
+	
+	public boolean getDone()
+	{
+		return ended;
+	}
+	
+	public void getUsername()
+	{
+		try
+		{									
+			while(true)
+			{
+				String name = functions.recvS();
+				boolean unique = room.isUnique(name);
+				if(unique && name.length() >= 3)
+				{
+					functions.send("READY");
+					username = name;
+					return;
+				}
+				else						
+				{
+					if(name.length() < 3)
+						functions.send("Username must be 3 or more characters!");
+					if(!unique)
+						functions.send(name + " is already taken!");
+					functions.send("RETRY");
+				}
+			}					
+		}			
+		catch(NullPointerException exception) {System.err.println("Null reference error"); closeSocket();}
+		catch(Exception exception){closeSocket();}
+	}
+	
+	private void closeSocket()
+	{
+		functions.close();
+	}
+}

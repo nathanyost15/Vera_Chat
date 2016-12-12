@@ -1,23 +1,40 @@
-
-
-
+/**
+ * @author Nathaniel Yost
+ * Dr. Frye
+ * CSC328
+ * DUE: 5 December 2016
+ * Purpose: Keeps track of time.
+ */
 public class Timer
 {
 	private boolean checkTime, tick;
 	private long startTime, endTime, difference;
-
+	
+	/**
+	 * Creates a Timer object.
+	 */
 	public Timer()
 	{
 		checkTime = true;
 		tick = false;
 	}
 	
+	/**
+	 * Will return true each time the given time interval occurs.
+	 * @param ms Milliseconds before the next time step.
+	 * @return
+	 */
 	public boolean checkTick(double ms)
 	{
 		double nanoSeconds = ms*1000000.0;
 		return getTick(nanoSeconds);
 	}
 	
+	/**
+	 * Returns nanosecond accuracy of whether the time step has occurred.
+	 * @param nanoSeconds Nanoseconds converted from milliseconds.
+	 * @return
+	 */
 	private boolean getTick(double nanoSeconds)
 	{
 		if (checkTime)

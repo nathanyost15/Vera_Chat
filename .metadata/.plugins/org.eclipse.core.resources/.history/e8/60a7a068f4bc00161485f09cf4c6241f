@@ -1,0 +1,8 @@
+
+public class ShutdownThread extends Thread
+{
+	public ShutdownThread()
+	{
+		
+	}
+}

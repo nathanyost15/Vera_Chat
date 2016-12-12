@@ -27,9 +27,10 @@ public class GUI extends JFrame
 	private JPanel panel;
 	private JButton sendButton;
 	private DefaultListModel<String> outputModel;
+	private Thread reader;
 	
 	private NFunction functions;
-	private Thread reader;
+	//private Thread reader;
 	private boolean showCommands;
 
 	/**
@@ -62,6 +63,7 @@ public class GUI extends JFrame
 				break;
 		}
 		// Create a reader thread that will continuously look for input from server socket.
+		
 		reader = new Thread(){
 			@Override
 			public void run()
@@ -88,6 +90,9 @@ public class GUI extends JFrame
 		showCommands = false;
 	}
 
+	/**
+	 * Sets up GUI components and adds them to a panel to be added to the frame
+	 */
 	private void initComponents()
 	{
 		// Initialize all components
@@ -159,6 +164,10 @@ public class GUI extends JFrame
 		setVisible(true);
 	}
 	
+	/**
+	 * Whenever the send button is clicked/enter pressed this method will be called.
+	 * @param e E is the event that occured when the method was called.
+	 */
 	public void sendButtonActionPerformed(ActionEvent e)
 	{	
 		new Thread(){
@@ -168,7 +177,6 @@ public class GUI extends JFrame
 				String input = inputField.getText();
 				if(input == null || input.equalsIgnoreCase(""))
 				{
-					System.out.println("NULL");
 					return;
 				}
 				if(input.equalsIgnoreCase("HELP"))
@@ -180,6 +188,10 @@ public class GUI extends JFrame
 		}.start();		
 	}
 	
+	/**
+	 * Adds text to the JList object that displays all output, and it makes sure there is only 13 lines of text displayed.
+	 * @param s S is a string that will be added to the next element in the JList.
+	 */
 	private void updateList(String s)
 	{
 		outputModel.addElement(s);
@@ -187,8 +199,13 @@ public class GUI extends JFrame
 			outputModel.remove(0);
 	}
 	
+	/**
+	 * Main method that accepts the command line arguments and starts the GUI.
+	 * @param args Command line arguments.
+	 */
 	public static void main(String[] args)
-	{
+	{		
+		// Usage clause
 		switch(args.length)
 		{
 			case 2:
@@ -200,7 +217,5 @@ public class GUI extends JFrame
 				System.exit(-1);			
 		}
 		GUI gui = new GUI(args[0], Integer.parseInt(args[1]));
-		//GUI gui = new GUI("73.13.216.20", 8000);
-		//GUI gui = new GUI("10.0.0.248", 8000);
 	}
 }
